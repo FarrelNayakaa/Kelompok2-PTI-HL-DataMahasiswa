@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Mahasiswa | KEL. 2 PTI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" type="css" href="style.css">
+    <style>
+        .btn {
+            cursor: pointer;
+        }
+
+        body,
+        .container,
+        .blue-background {
+            color: white; 
+        }
+
+        .logo-img{
+            width: 135px;
+            height: auto; 
+            margin-top: 30px;
+            margin-bottom: 10px;
+        }
+
+        .mb-3 blue-background{
+            margin-top: 70px;
+            margin-bottom: 90px;
+        }
+
+        .noimlulus {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        #Judul{
+            font-size: xx-large;
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            margin-right: 50px;
+        }
+
+        .blue-background{
+            margin-top: px;
+        }
+
+
+        body {
+    background-image: url('umn.jpg');
+    background-size: 150%; 
+    background-position: center; 
+    background-repeat: no-repeat; 
+    color: white;
+}
+
+</style>
+
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="kotak_atas blue-background px-3 py-2 rounded" id="Judul">Database Mahasiswa</h2>
+                    <div class="ml-auto"> <!-- Tambahkan kelas ml-auto di sini -->
+                        <img src="logo.png" class="logo-img" alt="Logo">
+                    </div>
+                </div>
+                <div class="mb-3 blue-background">
+                    <h2 class="noimlulus">Informasi</h2>
+                    <label for="showOptions" class="form-label">Show Data:</label>
+                    <select class="form-select form-select-sm" id="showOptions" onchange="changeShowOptions(this)">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="all">All</option>
+                    </select>
+                </div>
+
+                <table class="table mt-4">
+                    <thead>
+                        <tr>
+                            <th>NIM</th>
+                            <th>Nama Lengkap</th>
+                            <th>Alamat</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Data will be populated here -->
+                    </tbody>
+                </table>
+
+                <div class="mt-3">
+                
+
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h2 class="noimlulus">Add New Data</h2>
+
+                <form id="dataForm">
+                    <div class="mb-3">
+                        <label for="nim" class="form-label">NIM:</label>
+                        <input type="text" class="form-control" id="nim" name="nim">
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Nama Lengkap:</label>
+                        <input type="text" class="form-control" id="name" name="name">
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Alamat:</label>
+                        <input type="text" class="form-control" id="address" name="address">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="editModalLabel">Edit Data Mahasiswa</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form id="editForm">
+                <div class="mb-3">
+                    <label for="editName" class="form-label">Nama Lengkap:</label>
+                    <input type="text" class="form-control" id="editName" name="editName">
+                </div>
+            
+                <div class="mb-3">
+                    <label for="editAddress" class="form-label">Alamat:</label>
+                    <input type="text" class="form-control" id="editAddress" name="editAddress">
+                </div>
+                <input type="hidden" id="editNim">
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="saveEdit()">Save changes</button>
+        </div>
+        </div>
+    </div>
+    </div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+
+<script>
+    var currentPage = 0;
+    var pageSize = 5;
+
+    toastr.options = {
+    "closeButton": false,
+    "debug": false,
+    "newestOnTop": false,
+    "progressBar": false,
+    "positionClass": "toast-top-full-width", // Change the position class
+    "preventDuplicates": false,
+    "onclick": null,
+    "showDuration": "300",
+    "hideDuration": "1000",
+    "timeOut": "5000",
+    "extendedTimeOut": "1000",
+    "showEasing": "swing",
+    "hideEasing": "linear",
+    "showMethod": "fadeIn",
+    "hideMethod": "fadeOut"
+};
+
+    function changeShowOptions(select) {
+        var selectedOption = select.value;
+        if (selectedOption === 'all') {
+            showAllData();
+        } else {
+            pageSize = parseInt(selectedOption);
+            showCurrentPage();
+        }
+    }
+
+    function showAllData() {
+        var rows = document.querySelectorAll('.table tbody tr');
+        rows.forEach(function(row) {
+            row.style.display = '';
+        });
+    }
+
+    function showCurrentPage() {
+        var startIndex = currentPage * pageSize;
+        var endIndex = startIndex + pageSize;
+        var rows = document.querySelectorAll('.table tbody tr');
+        rows.forEach(function(row, index) {
+            if (index >= startIndex && index < endIndex) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    function nextPage() {
+        var totalRows = document.querySelectorAll('.table tbody tr').length;
+        var totalPages = Math.ceil(totalRows / pageSize);
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            showCurrentPage();
+        }
+    }
+
+    function previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            showCurrentPage();
+        }
+    }
+
+    document.getElementById('dataForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        var nim = document.getElementById('nim').value;
+        var name = document.getElementById('name').value;
+        var address = document.getElementById('address').value;
+        
+        // Periksa apakah semua bidang telah diisi
+        if (nim.trim() !== '' && name.trim() !== '' && address.trim() !== '') {
+            addData(nim, name, address);
+            document.getElementById('nim').value = '';
+            document.getElementById('name').value = '';
+            document.getElementById('address').value = '';
+            toastr.success('Data Berhasil Ditambahkan!.');
+        } else {
+            toastr.error('Mohon Isi Data dengan Lengkap!');
+        }
+    });
+
+    function addData(nim, name, address) {
+        var table = document.querySelector('.table tbody');
+        var newRow = table.insertRow();
+        var cell1 = newRow.insertCell(0);
+        var cell2 = newRow.insertCell(1);
+        var cell3 = newRow.insertCell(2);
+        var cell4 = newRow.insertCell(3);
+        cell1.innerHTML = nim;
+        cell2.innerHTML = name;
+        cell3.innerHTML = address;
+        cell4.innerHTML = '<button class="btn btn-success" onclick="openEditModal(this)">Edit</button> <button class="btn btn-danger" onclick="deleteRow(this)">Delete</button>';
+    }
+
+    function openEditModal(button) {
+        var row = button.parentNode.parentNode;
+        var nim = row.cells[0].innerHTML;
+        var name = row.cells[1].innerHTML;
+        var address = row.cells[2].innerHTML;
+        document.getElementById('editNim').value = nim;
+        document.getElementById('editName').value = name;
+        document.getElementById('editAddress').value = address;
+        var myModal = new bootstrap.Modal(document.getElementById('editModal'));
+        myModal.show();
+    }
+
+    function saveEdit() {
+        var nim = document.getElementById('editNim').value;
+        var name = document.getElementById('editName').value;
+        var address = document.getElementById('editAddress').value;
+        var tableRows = document.querySelectorAll('.table tbody tr');
+        for (var i = 0; i < tableRows.length; i++) {
+            var cells = tableRows[i].querySelectorAll('td');
+            if (cells[0].textContent.trim() === nim) {
+                cells[1].textContent = name;
+                cells[2].textContent = address;
+                break;
+            }
+        }
+        $('#editModal').modal('hide');
+        toastr.success('Data Berhasil Diupdate!');
+    }
+
+    function deleteRow(button) {
+        var row = button.parentNode.parentNode;
+        row.remove();
+        toastr.error('Data Berhasil Dihapus!');
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+});
+
+</script>
+
+</body>
+</html>
